@@ -1,0 +1,89 @@
+import pygame
+import random
+import math
+
+# 初始化Pygame
+pygame.init()
+
+# 定义颜色
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+
+# 定义屏幕尺寸
+screen_width = 800
+screen_height = 800
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Wheel of Fortune")
+
+# 定义转盘属性
+num_options = 10
+radius = 300
+center = (screen_width // 2, screen_height // 2)
+angle = 360 / num_options
+font = pygame.font.SysFont(None, 50)
+clock = pygame.time.Clock()
+
+# 计算选项的位置
+options = [i + 1 for i in range(num_options)]
+positions = []
+
+for i in range(num_options):
+    theta = math.radians(angle * i)
+    x = center[0] + radius * math.cos(theta)
+    y = center[1] + radius * math.sin(theta)
+    positions.append((x, y))
+
+# 绘制转盘函数
+def draw_wheel(rotation_angle):
+    screen.fill(WHITE)
+    
+    # 绘制选项
+    for i in range(num_options):
+        theta = math.radians(angle * i + rotation_angle)
+        x = center[0] + radius * math.cos(theta)
+        y = center[1] + radius * math.sin(theta)
+        pygame.draw.line(screen, BLACK, center, (x, y), 3)
+        
+        option_pos = positions[i]
+        text = font.render(str(options[i]), True, BLACK)
+        text_rect = text.get_rect(center=option_pos)
+        screen.blit(text, text_rect)
+    
+    # 绘制中心圆
+    pygame.draw.circle(screen, BLACK, center, 10)
+    
+    # 绘制指针
+    pointer_length = 150
+    pointer_x = center[0] + pointer_length * math.cos(math.radians(rotation_angle))
+    pointer_y = center[1] + pointer_length * math.sin(math.radians(rotation_angle))
+    pygame.draw.line(screen, RED, center, (pointer_x, pointer_y), 5)
+
+# 主程序循环
+running = True
+rotating = False
+rotation_speed = 0
+rotation_angle = 0
+target_angle = 0
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and not rotating:
+                rotating = True
+                rotation_speed = random.uniform(20, 30)
+                target_angle = random.randint(1800, 3600)  # 至少5圈
+
+    if rotating:
+        rotation_angle += rotation_speed
+        if rotation_angle >= target_angle:
+            rotation_angle = target_angle
+            rotating = False
+
+    draw_wheel(rotation_angle % 360)
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
