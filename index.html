@@ -5,162 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>美式漫畫風格轉盤 - 無限回合</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Comic Sans MS', cursive;
-            background-color: #f0f0f0;
-            background-image: url('data:image/svg+xml,%3Csvg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239C92AC" fill-opacity="0.4" fill-rule="evenodd"%3E%3Ccircle cx="22" cy="22" r="1"%3E%3C/circle%3E%3C/g%3E%3C/svg%3E');
-        }
-        .wheel-container {
-            position: relative;
-            width: 400px;
-            height: 400px;
-        }
-        .wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                #ff6b6b 0deg 36deg,
-                #feca57 36deg 72deg,
-                #48dbfb 72deg 108deg,
-                #ff9ff3 108deg 144deg,
-                #54a0ff 144deg 180deg,
-                #5f27cd 180deg 216deg,
-                #ff6b6b 216deg 252deg,
-                #feca57 252deg 288deg,
-                #48dbfb 288deg 324deg,
-                #ff9ff3 324deg 360deg
-            );
-            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
-            box-shadow: 0 0 0 15px #333, 0 0 0 20px #fff, 10px 10px 0 rgba(0,0,0,0.5);
-        }
-        .color-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            clip-path: polygon(50% 50%, 50% 0, 60% 0, 60% 60%, 50% 50%);
-            transition: all 0.3s ease;
-        }
-        .color-section.highlighted {
-            filter: brightness(1.2) contrast(1.2);
-            transform: scale(1.05);
-            z-index: 1;
-        }
+        /* ... 其他樣式保持不變 ... */
         .pointer {
             position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 60px;
+            top: 50%;
+            right: -40px; /* 修改: 將指針移到右側 */
+            transform: translateY(-50%); /* 修改: 調整變換方式 */
+            width: 60px; /* 修改: 調整寬度 */
+            height: 40px; /* 修改: 調整高度 */
             background: #333;
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            clip-path: polygon(0% 50%, 100% 0%, 100% 100%); /* 修改: 調整形狀 */
             z-index: 10;
         }
-        .wheel-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: #fff;
-            border-radius: 50%;
-            border: 8px solid #333;
-            z-index: 5;
-        }
-        .option {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
-            transition: all 0.3s ease;
-        }
-        .option.highlighted {
-            font-size: 36px;
-            text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
-            z-index: 2;
-        }
-        button {
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 24px;
-            font-family: 'Comic Sans MS', cursive;
-            background-color: #ffd700;
-            border: 5px solid #333;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 5px 5px 0 #333;
-        }
-        button:hover {
-            transform: translate(-5px, -5px);
-            box-shadow: 10px 10px 0 #333;
-        }
-        button:active {
-            transform: translate(0, 0);
-            box-shadow: none;
-        }
-        #spinCount {
-            text-align: center;
-            font-size: 20px;
-            margin-top: 10px;
-        }
+        /* ... 其他樣式保持不變 ... */
     </style>
 </head>
 <body>
-    <div>
-        <div class="wheel-container">
-            <div class="wheel" id="wheel"></div>
-            <div class="pointer"></div>
-            <div class="wheel-center"></div>
-        </div>
-        <button onclick="spinWheel()">轉動轉盤!</button>
-        <div id="spinCount">已轉動次數: 0</div>
-    </div>
+    <!-- ... HTML 結構保持不變 ... -->
 
     <script>
-        const wheel = document.getElementById('wheel');
-        const spinCountDisplay = document.getElementById('spinCount');
-        let spinCount = 0;
-        let currentRotation = 0;
-
-        const options = ['炒飯', '鍋燒麵', '牛肉麵', '水餃', '鐵板燒', '火鍋', '義大利麵', '壽司', '麥當勞', '肯德基'];
-        const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3'];
-
-        function createOptions() {
-            for (let i = 0; i < options.length; i++) {
-                const option = document.createElement('div');
-                option.className = 'option';
-                const angle = (i - 0.5) * 36; // 將數字順時針偏移18度
-                const radius = 150; // 調整此值以改變數字距離中心的距離
-                const x = radius * Math.cos(angle * Math.PI / 180);
-                const y = radius * Math.sin(angle * Math.PI / 180);
-                option.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%)) rotate(${angle + 90}deg)`;
-                option.textContent = options[i];
-                wheel.appendChild(option);
-
-                // 添加色塊
-                const colorSection = document.createElement('div');
-                colorSection.className = 'color-section';
-                colorSection.style.backgroundColor = colors[i];
-                colorSection.style.transform = `rotate(${i * 36}deg)`;
-                wheel.appendChild(colorSection);
-            }
-        }
+        // ... 前面的代碼保持不變 ...
 
         function spinWheel() {
             spinCount++;
@@ -176,15 +40,15 @@
             document.querySelectorAll('.option, .color-section').forEach(el => el.classList.remove('highlighted'));
             
             setTimeout(() => {
-                const resultIndex = Math.floor((currentRotation + 18) % 360 / 36);
-                const highlightedOption = document.querySelector(`.option:nth-child(${resultIndex + 1})`);
-                const highlightedColorSection = document.querySelector(`.color-section:nth-child(${resultIndex + 11})`);
+                const result = Math.floor(currentRotation / 36) + 1; // 修改: 調整結果計算方式
+                const highlightedOption = document.querySelector(`.option:nth-child(${result})`);
+                const highlightedColorSection = document.querySelector(`.color-section:nth-child(${result + 10})`);
                 highlightedOption.classList.add('highlighted');
                 highlightedColorSection.classList.add('highlighted');
             }, 5000);
         }
 
-        createOptions();
+        // ... 其他代碼保持不變 ...
     </script>
 </body>
 </html>
