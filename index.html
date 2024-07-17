@@ -72,6 +72,11 @@
             font-weight: bold;
             color: #333;
             text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+            transition: all 0.3s ease;
+        }
+        .option.highlighted {
+            font-size: 36px;
+            text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
         }
         button {
             margin-top: 30px;
@@ -115,13 +120,14 @@
         const wheel = document.getElementById('wheel');
         const spinCountDisplay = document.getElementById('spinCount');
         let spinCount = 0;
+        let currentRotation = 0;
 
         function createOptions() {
             for (let i = 1; i <= 10; i++) {
                 const option = document.createElement('div');
                 option.className = 'option';
                 const angle = (i - 0.5) * 36; // 將數字置於每個區域的中心
-                const radius = 170; // 調整此值以改變數字距離中心的距離
+                const radius = 150; // 調整此值以改變數字距離中心的距離
                 const x = radius * Math.cos(angle * Math.PI / 180);
                 const y = radius * Math.sin(angle * Math.PI / 180);
                 option.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%)) rotate(${angle + 90}deg)`;
@@ -134,13 +140,19 @@
             spinCount++;
             spinCountDisplay.textContent = `已轉動次數: ${spinCount}`;
 
-            const rotation = Math.floor(Math.random() * 360) + 1800; // 至少轉5圈
-            wheel.style.transform = `rotate(${rotation}deg)`;
+            const extraRotation = Math.floor(Math.random() * 360);
+            const totalRotation = currentRotation + 1800 + extraRotation; // 至少轉5圈再加上隨機角度
+
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            currentRotation = totalRotation % 360;
+
+            // 重置所有選項的樣式
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('highlighted'));
             
             setTimeout(() => {
-                const actualRotation = 360 - (rotation % 360);
-                const result = Math.floor(actualRotation / 36) + 1;
-                alert(`轉盤停在了選項 ${result}！`);
+                const result = Math.floor(currentRotation / 36) + 1;
+                const highlightedOption = document.querySelector(`.option:nth-child(${result})`);
+                highlightedOption.classList.add('highlighted');
             }, 5000);
         }
 
