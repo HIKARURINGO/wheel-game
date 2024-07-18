@@ -120,12 +120,6 @@
             margin-top: 10px;
         }
 
-        @keyframes glow {
-            0% { filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.7)); }
-            50% { filter: brightness(1.5) drop-shadow(0 0 20px rgba(255,255,255,0.9)); }
-            100% { filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.7)); }
-        }
-
        .color-section.highlighted {
             filter: brightness(1.2) contrast(1.2);
             transform: scale(1.05);
@@ -199,21 +193,6 @@
                 highlightedOption.classList.add('highlighted');
                 highlightedColorSection.classList.add('highlighted');
 
-                // 添加發光特效到包含0度的區域
-                const glowingSection = Math.floor(currentRotation / 36);
-                const glowingOption = document.querySelector(`.option:nth-child(${glowingSection + 1})`);
-                const glowingColorSection = document.querySelector(`.color-section:nth-child(${glowingSection + 11})`);
-                
-                glowingOption.classList.add('glowing');
-                glowingColorSection.classList.add('glowing');
-
-                // 如果結果剛好是最後一個區域，也要讓第一個區域發光
-                if (glowingSection === 9) {
-                    const firstOption = document.querySelector('.option:nth-child(1)');
-                    const firstColorSection = document.querySelector('.color-section:nth-child(11)');
-                    firstOption.classList.add('glowing');
-                    firstColorSection.classList.add('glowing');
-                }
             }, 5000);
         }
         createOptions();
