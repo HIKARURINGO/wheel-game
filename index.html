@@ -119,6 +119,22 @@
             font-size: 20px;
             margin-top: 10px;
         }
+
+        @keyframes glow {
+            0% { filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.7)); }
+            50% { filter: brightness(1.5) drop-shadow(0 0 20px rgba(255,255,255,0.9)); }
+            100% { filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.7)); }
+        }
+
+        .color-section.glowing, .option.glowing {
+            animation: glow 1s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        .option.glowing {
+            font-size: 36px;
+            text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
+        }
     </style>
 </head>
 <body>
@@ -160,26 +176,34 @@
                 wheel.appendChild(colorSection);
             }
         }
-
-        function spinWheel() {
+  function spinWheel() {
             spinCount++;
             spinCountDisplay.textContent = `已轉動次數: ${spinCount}`;
 
             const extraRotation = Math.floor(Math.random() * 360);
-            const totalRotation = currentRotation + 1800 + extraRotation; // 至少轉5圈再加上隨機角度
+            const totalRotation = currentRotation + 1800 + extraRotation;
 
             wheel.style.transform = `rotate(${totalRotation}deg)`;
             currentRotation = totalRotation % 360;
 
             // 重置所有選項和色塊的樣式
-            document.querySelectorAll('.option, .color-section').forEach(el => el.classList.remove('highlighted'));
+            document.querySelectorAll('.option, .color-section').forEach(el => {
+                el.classList.remove('highlighted', 'glowing');
+            });
             
             setTimeout(() => {
-                const result = 10 - Math.floor(((currentRotation + 18) % 360) / 36) || 10;
+                const result = Math.floor(currentRotation / 36) + 1;
                 const highlightedOption = document.querySelector(`.option:nth-child(${result})`);
                 const highlightedColorSection = document.querySelector(`.color-section:nth-child(${result + 10})`);
                 highlightedOption.classList.add('highlighted');
                 highlightedColorSection.classList.add('highlighted');
+
+                // 添加發光效果到包含0度的區域
+                const glowingResult = (result % 10) || 10;
+                const glowingOption = document.querySelector(`.option:nth-child(${glowingResult})`);
+                const glowingColorSection = document.querySelector(`.color-section:nth-child(${glowingResult + 10})`);
+                glowingOption.classList.add('glowing');
+                glowingColorSection.classList.add('glowing');
             }, 5000);
         }
 
