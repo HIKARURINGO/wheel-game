@@ -175,10 +175,10 @@
             spinCountDisplay.textContent = `已轉動次數: ${spinCount}`;
 
             // 確保至少轉動5圈
-            const minRotation = 5 * 360; // 5圈的度數
-            const extraRotation = Math.floor(Math.random() * 360); // 額外的隨機度數
+            const minRotation = 1800 ; // 5圈的度數
+            const extraRotation = Math.floor(Math.random() * 1800); // 額外的隨機度數
             const totalRotation = minRotation + extraRotation;
- // 計算新的總旋轉角度
+            // 計算新的總旋轉角度
             const newRotation = currentRotation + totalRotation;
 
             wheel.style.transform = `rotate(${newRotation}deg)`;
