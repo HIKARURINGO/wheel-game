@@ -126,14 +126,14 @@
             100% { filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.7)); }
         }
 
-        .color-section.glowing, .option.glowing {
-            animation: glow 1s ease-in-out infinite;
-            z-index: 2;
+       .color-section.highlighted {
+            filter: brightness(1.2) contrast(1.2);
+            transform: scale(1.05);
+            z-index: 1;
         }
 
-        .option.glowing {
-            font-size: 36px;
-            text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
+        .color-section.glowing, .option.glowing {
+            animation: glowing 1s ease-in-out infinite;
         }
     </style>
 </head>
@@ -195,18 +195,27 @@
                 const result = Math.floor(currentRotation / 36) + 1;
                 const highlightedOption = document.querySelector(`.option:nth-child(${result})`);
                 const highlightedColorSection = document.querySelector(`.color-section:nth-child(${result + 10})`);
+                
                 highlightedOption.classList.add('highlighted');
                 highlightedColorSection.classList.add('highlighted');
 
-                // 添加發光效果到包含0度的區域
-                const glowingResult = (result % 10) || 10;
-                const glowingOption = document.querySelector(`.option:nth-child(${glowingResult})`);
-                const glowingColorSection = document.querySelector(`.color-section:nth-child(${glowingResult + 10})`);
+                // 添加發光特效到包含0度的區域
+                const glowingSection = Math.floor(currentRotation / 36);
+                const glowingOption = document.querySelector(`.option:nth-child(${glowingSection + 1})`);
+                const glowingColorSection = document.querySelector(`.color-section:nth-child(${glowingSection + 11})`);
+                
                 glowingOption.classList.add('glowing');
                 glowingColorSection.classList.add('glowing');
+
+                // 如果結果剛好是最後一個區域，也要讓第一個區域發光
+                if (glowingSection === 9) {
+                    const firstOption = document.querySelector('.option:nth-child(1)');
+                    const firstColorSection = document.querySelector('.color-section:nth-child(11)');
+                    firstOption.classList.add('glowing');
+                    firstColorSection.classList.add('glowing');
+                }
             }, 5000);
         }
-
         createOptions();
     </script>
 </body>
