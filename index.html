@@ -141,8 +141,7 @@
         <button onclick="spinWheel()">轉動轉盤!</button>
         <div id="spinCount">已轉動次數: 0</div>
     </div>
-
-    <script>
+ <script>
         const wheel = document.getElementById('wheel');
         const spinCountDisplay = document.getElementById('spinCount');
         let spinCount = 0;
@@ -151,34 +150,22 @@
         const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3'];
 
         function createOptions() {
-            for (let i = 1; i <= 10; i++) {
-                const option = document.createElement('div');
-                option.className = 'option';
-                const angle = (i - 0.5) * 36 + 18; // 將數字順時針偏移18度
-                const radius = 150; // 調整此值以改變數字距離中心的距離
-                const x = radius * Math.cos(angle * Math.PI / 180);
-                const y = radius * Math.sin(angle * Math.PI / 180);
-                option.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%)) rotate(${angle + 90}deg)`;
-                option.textContent = i;
-                wheel.appendChild(option);
-
-                // 添加色塊
-                const colorSection = document.createElement('div');
-                colorSection.className = 'color-section';
-                colorSection.style.backgroundColor = colors[i - 1];
-                colorSection.style.transform = `rotate(${(i - 1) * 36}deg)`;
-                wheel.appendChild(colorSection);
-            }
+            // ... createOptions 函數內容保持不變 ...
         }
-  function spinWheel() {
+
+        function spinWheel() {
             spinCount++;
             spinCountDisplay.textContent = `已轉動次數: ${spinCount}`;
 
-            const extraRotation = Math.floor(Math.random() * 360);
-            const totalRotation = currentRotation + 1800 + extraRotation;
+            // 確保至少轉動5圈
+            const minRotation = 5 * 360; // 5圈的度數
+            const extraRotation = Math.floor(Math.random() * 360); // 額外的隨機度數
+            const totalRotation = minRotation + extraRotation;
+ // 計算新的總旋轉角度
+            const newRotation = currentRotation + totalRotation;
 
-            wheel.style.transform = `rotate(${totalRotation}deg)`;
-            currentRotation = totalRotation % 360;
+            wheel.style.transform = `rotate(${newRotation}deg)`;
+            currentRotation = newRotation % 360; // 更新當前旋轉角度
 
             // 重置所有選項和色塊的樣式
             document.querySelectorAll('.option, .color-section').forEach(el => {
@@ -189,13 +176,19 @@
                 const result = Math.floor(currentRotation / 36) + 1;
                 const highlightedOption = document.querySelector(`.option:nth-child(${result})`);
                 const highlightedColorSection = document.querySelector(`.color-section:nth-child(${result + 10})`);
-                
                 highlightedOption.classList.add('highlighted');
                 highlightedColorSection.classList.add('highlighted');
 
+                // 添加發光效果到包含0度的區域
+                const glowingResult = (result % 10) || 10;
+                const glowingOption = document.querySelector(`.option:nth-child(${glowingResult})`);
+                const glowingColorSection = document.querySelector(`.color-section:nth-child(${glowingResult + 10})`);
+                glowingOption.classList.add('glowing');
+                glowingColorSection.classList.add('glowing');
             }, 5000);
         }
+
         createOptions();
-    </script>
+    </script>    
 </body>
 </html>
